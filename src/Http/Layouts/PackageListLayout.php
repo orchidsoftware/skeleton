@@ -1,6 +1,8 @@
 <?php
 namespace :vendor\:package_name\Http\Layouts;
 
+use Illuminate\Support\Str;
+use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Layouts\Table;
 use Orchid\Screen\TD;
 
@@ -9,20 +11,23 @@ class :package_nameListLayout extends Table
     /**
      * @var string
      */
-    public $data = 'data';
+    public $target = 'data';
 
     /**
      * @return array
      */
-    public function fields() : array
+    public function columns() : array
     {
         return  [
-			TD::set('input','Title')
-                ->link('platform.:_package_name.edit','id','title'),
-			TD::set('body', 'Text')
-                ->render(function ($data) {
-                    return str_limit($data->getContent('body'), 50);
-                }),
+		TD::set('title','Title')
+			->render(function ($data) {
+			    return Link::make($data->getContent('title'))
+				->route('platform.:_package_name.edit', $data->id);
+			}),
+		TD::set('body', 'Text')
+			->render(function ($data) {
+			    return Str::limit($data->getContent('body'), 50);
+			}),
         ];
     }
 }
